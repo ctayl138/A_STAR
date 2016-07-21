@@ -9,8 +9,6 @@ import java.util.Scanner;
 
 public class A_STAR {
     
-    private static final int DCOST = 14;
-    private static final int VHCOST = 10;
     private Node [][] map = new Node[15][15];
     private Random rand = new Random( );
     private Node start;
@@ -18,7 +16,7 @@ public class A_STAR {
     private Node current;
     private int blockCount = 0;
     private final PriorityQueue openList = new PriorityQueue<>(225, (Node n, Node m) -> {
-        return n.getF() < m.getF()?-1: n.getF()>m.getF()?1 :0;
+        return n.getG() < m.getG()?-1: n.getG()>m.getG()?1 :0;
     });
     private ArrayList closedList = new ArrayList(225);
     
@@ -32,7 +30,7 @@ public class A_STAR {
         while(blockCount < 24){
             int m = rand.nextInt(15);
             int n = rand.nextInt(15);
-            
+
             if(map[m][n].type != 1){
                 map[m][n].type = 1;
                 blockCount++;
@@ -165,12 +163,19 @@ public class A_STAR {
                 }
             
             }
-            if(closedList.contains(end)){
+            if(openList.isEmpty()){
                 trace(end);
                 System.out.println("Final Path:");
                 for(int i = 0; i < 15; i++){
                     for(int j = 0; j < 15; j++){
                         System.out.print(map[i][j].getType() + " ");
+                    }
+                    System.out.print("\n");
+                }
+                System.out.println("\n");
+                for(int i = 0; i < 15; i++){
+                    for(int j = 0; j < 15; j++){
+                        System.out.print(map[i][j].getG() + " ");
                     }
                     System.out.print("\n");
                 }
@@ -199,7 +204,7 @@ public class A_STAR {
     
     public int heuristic(Node n){
         int h;
-        h = (abs((end.getCol()-n.getCol()))+ abs((end.getRow() - n.getRow())))*10;
+        h = (abs((n.getCol()-end.getCol()))+ abs((n.getRow() - end.getRow())))*10;
         return h;
     }
     
