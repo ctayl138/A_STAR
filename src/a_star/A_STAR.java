@@ -16,10 +16,13 @@ public class A_STAR {
     private Node current;
     private int blockCount = 0;
     private final PriorityQueue openList = new PriorityQueue<>(225, (Node n, Node m) -> {
-        return n.getG() < m.getG()?-1: n.getG()>m.getG()?1 :0;
+        n.setF( );
+        m.setF( );
+        return n.getF() < m.getF() ? - 1: n.getF() > m.getF() ? 1 :0;
+        
+        
     });
     private ArrayList closedList = new ArrayList(225);
-    
     
     public A_STAR( ){
         for(int i = 0; i < 15; i++){
@@ -64,6 +67,9 @@ public class A_STAR {
         public void setParent(Node n){
             parent = n;
         }
+        public void setType(int n){
+            type = n;
+        }
         //accessor methods to get values 
         public int getF(){return f;} public int getType() {return type;} public int getG(){ return g; } public int getH(){ return h; } public Node getParent(){ return parent; } public int getRow(){ return row; } public int getCol(){ return col; }
         @Override
@@ -82,33 +88,57 @@ public class A_STAR {
         Scanner scan = new Scanner(System.in);
         int m;
         int n;
+        char choice = 'y';
         
-        System.out.println("\nEnter the row of the starting position:");
-        m = scan.nextInt( );
-        System.out.println("\nEnter the column of the starting position:");
-        n = scan.nextInt( );
         
-        astar.start = astar.map[m][n];
+        while(choice=='y'||choice=='Y'){
+            System.out.println("\nEnter the row of the starting position:");
+            m = scan.nextInt( );
+            System.out.println("\nEnter the column of the starting position:");
+            n = scan.nextInt( );
         
-        System.out.println("\nEnter the row of the starting position:");
-        m = scan.nextInt( );
-        System.out.println("\nEnter the column of the starting position:");
-        n = scan.nextInt( );
+            astar.start = astar.map[m][n];
         
-        astar.end = astar.map[m][n];
+            System.out.println("\nEnter the row of the starting position:");
+            m = scan.nextInt( );
+            System.out.println("\nEnter the column of the starting position:");
+            n = scan.nextInt( );
         
-        astar.start.type = 2;
-        astar.end.type = 4;
+            astar.end = astar.map[m][n];
         
-        System.out.println("Board with Terminals:");
-        for(int i = 0; i < 15; i++){
-            for(int j = 0; j < 15; j++){
-                System.out.print(astar.map[i][j].type + " ");
+            astar.start.type = 2;
+            astar.end.type = 4;
+        
+            System.out.println("\nBoard with Terminals:");
+            System.out.println("0 => traverseable");
+            System.out.println("1 => blocked");
+            System.out.println("2 => start");
+            System.out.println("4 => end");
+            System.out.println("8 => path");
+            for(int i = 0; i < 15; i++){
+                for(int j = 0; j < 15; j++){
+                    System.out.print(astar.map[i][j].type + " ");
+                }
+                System.out.print("\n");
             }
-            System.out.print("\n");
+        
+            astar.move( );
+            System.out.println("Do you want to choose different start and end points?");
+            choice = scan.next().charAt(0);
+            astar.mapReset();
+            if(choice == 'y'||choice == 'Y'){
+            System.out.println("\nMap reset: ");
+            for(int i = 0; i < 15; i++){
+                for(int j = 0; j < 15; j++){
+                    System.out.print(astar.map[i][j].type + " ");
+                }
+                System.out.print("\n");
+            }
+            }
         }
         
-        astar.move( );
+        System.out.println("\n\nHave a nice day! :)");
+        
         
         
     }
@@ -165,17 +195,15 @@ public class A_STAR {
             }
             if(openList.isEmpty()){
                 trace(end);
-                System.out.println("Final Path:");
+                System.out.println("\nFinal Path:");
+                System.out.println("0 => traverseable");
+                System.out.println("1 => blocked");
+                System.out.println("2 => start");
+                System.out.println("4 => end");
+                System.out.println("8 => path");
                 for(int i = 0; i < 15; i++){
                     for(int j = 0; j < 15; j++){
                         System.out.print(map[i][j].getType() + " ");
-                    }
-                    System.out.print("\n");
-                }
-                System.out.println("\n");
-                for(int i = 0; i < 15; i++){
-                    for(int j = 0; j < 15; j++){
-                        System.out.print(map[i][j].getG() + " ");
                     }
                     System.out.print("\n");
                 }
@@ -200,6 +228,22 @@ public class A_STAR {
             n.setF();
         }
         
+    }
+    public void mapReset( ){
+        for(int i = 0; i < 15; i++){
+            for(int j = 0; j < 15; j++){
+                if((map[i][j].getType() == 2)||(map[i][j].getType() == 3)||(map[i][j].getType()==4)||(map[i][j].getType()==8)){
+                    map[i][j].setType(0);
+                    map[i][j].setParent(null);
+                    map[i][j].setG(0);
+                    map[i][j].setH(0);
+                    map[i][j].setF();
+                }
+                
+            }
+        }
+        openList.clear();
+        closedList.clear();
     }
     
     public int heuristic(Node n){
