@@ -16,11 +16,7 @@ public class A_STAR {
     private Node current;
     private int blockCount = 0;
     private final PriorityQueue openList = new PriorityQueue<>(225, (Node n, Node m) -> {
-        n.setF( );
-        m.setF( );
         return n.getF() < m.getF() ? - 1: n.getF() > m.getF() ? 1 :0;
-        
-        
     });
     private ArrayList closedList = new ArrayList(225);
     
@@ -30,7 +26,7 @@ public class A_STAR {
                 map[i][j] = new Node(i, j, 0);
             }
         }
-        while(blockCount < 24){
+        while(blockCount < 90){
             int m = rand.nextInt(15);
             int n = rand.nextInt(15);
 
@@ -153,41 +149,41 @@ public class A_STAR {
 
             Node n;  
             
-            if(current.getRow()-1>=0){
+            if(current.getRow() - 1 >= 0){
                 n = map[current.getRow()-1][current.getCol()];
                 update(n, 10); 
 
-                if(current.getCol()-1>=0){                      
+                if(current.getCol() - 1 >= 0){                      
                     n = map[current.getRow()-1][current.getCol()-1];
                     update(n, 14); 
                 }
 
-                if(current.getCol()+1 < map[0].length){
+                if(current.getCol()+1 < 15){
                     n = map[current.getRow()-1][current.getCol()+1];
                     update(n, 14); 
                 }
             } 
 
-            if(current.getCol()-1>=0){
+            if(current.getCol() - 1 >= 0){
                 n = map[current.getRow()][current.getCol()-1];
                 update(n, 10); 
             }
 
-            if(current.getCol()+1<map[0].length){
+            if(current.getCol()+1< 15){
                 n = map[current.getRow()][current.getCol()+1];
                 update(n, 10); 
             }
 
-            if(current.getRow()+1<map.length){
+            if(current.getRow()+1< 15){
                 n = map[current.getRow()+1][current.getCol()];
                 update(n, 10); 
 
-                if(current.getCol()-1>=0){
+                if(current.getCol()-1 >= 0){
                     n = map[current.getRow()+1][current.getCol()-1];
                     update(n, 14); 
                 }
                 
-                if(current.getCol()+ 1 < map[0].length){
+                if(current.getCol()+ 1 < 15){
                    n = map[current.getRow()+1][current.getCol()+1];
                     update(n, 14); 
                 }
@@ -224,8 +220,9 @@ public class A_STAR {
         if(!openList.contains(n)){
             n.setParent(current);
             n.setG(current.getG() + cost);
-            openList.add(n);
             n.setF();
+            openList.add(n);
+            
         }
         
     }
@@ -254,11 +251,10 @@ public class A_STAR {
     
     public void trace(Node n){
         current = n.getParent();
-        if(current == null){return;}
+        if(current == null){System.out.println("\nNo path could be found!");return;}
         while(current != start){
             current.type = 8;
             current = current.getParent();
         }
     }
-    
 }
